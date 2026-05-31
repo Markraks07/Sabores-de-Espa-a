@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin - Sabores de España</title>
+    <link rel="stylesheet" href="restaurante-style.css">
+</head>
+<body>
+
+    <!-- LOGIN -->
+    <div id="login-screen" class="login-screen">
+        <div class="login-box">
+            <h1>🍽️ Sabores de España</h1>
+            <h2>Panel de Administración</h2>
+            <form id="form-login">
+                <div class="form-group">
+                    <label>Usuario</label>
+                    <input type="text" id="login-usuario" placeholder="Usuario" required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="login-password" placeholder="Contraseña" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Entrar</button>
+                <p class="login-error" id="login-error" style="display:none">❌ Usuario o contraseña incorrectos</p>
+            </form>
+            <p class="login-hint">Usuario: <strong>admin</strong> | Contraseña: <strong>1234</strong></p>
+        </div>
+    </div>
+
+    <!-- PANEL ADMIN -->
+    <div id="admin-panel" style="display:none">
+
+        <!-- HEADER ADMIN -->
+        <header class="admin-header">
+            <h2>⚙️ Panel de Administración</h2>
+            <div class="admin-header-right">
+                <span id="admin-usuario-nombre"></span>
+                <a href="restaurante-index.html" class="btn btn-secondary">Ver Web</a>
+                <button class="btn btn-danger" onclick="cerrarSesion()">Cerrar Sesión</button>
+            </div>
+        </header>
+
+        <!-- NAV ADMIN -->
+        <nav class="admin-nav">
+            <button class="admin-nav-btn activo" data-seccion="dashboard">📊 Dashboard</button>
+            <button class="admin-nav-btn" data-seccion="reservas">📅 Reservas</button>
+            <button class="admin-nav-btn" data-seccion="resenas">⭐ Reseñas</button>
+            <button class="admin-nav-btn" data-seccion="menu">🍽️ Menú</button>
+        </nav>
+
+        <!-- CONTENIDO ADMIN -->
+        <div class="admin-contenido">
+
+            <!-- DASHBOARD -->
+            <div id="seccion-dashboard" class="admin-seccion activo">
+                <h2>Dashboard</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📅</div>
+                        <div class="stat-info">
+                            <span class="stat-numero" id="dash-total-reservas">0</span>
+                            <span class="stat-label">Total Reservas</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-info">
+                            <span class="stat-numero" id="dash-reservas-pendientes">0</span>
+                            <span class="stat-label">Pendientes</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-info">
+                            <span class="stat-numero" id="dash-reservas-confirmadas">0</span>
+                            <span class="stat-label">Confirmadas</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⭐</div>
+                        <div class="stat-info">
+                            <span class="stat-numero" id="dash-valoracion">0</span>
+                            <span class="stat-label">Valoración Media</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💬</div>
+                        <div class="stat-info">
+                            <span class="stat-numero" id="dash-total-resenas">0</span>
+                            <span class="stat-label">Total Reseñas</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-info">
+                            <span class="stat-numero" id="dash-total-personas">0</span>
+                            <span class="stat-label">Total Personas</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-row">
+                    <div class="dashboard-col">
+                        <h3>📅 Próximas Reservas</h3>
+                        <div id="proximas-reservas"></div>
+                    </div>
+                    <div class="dashboard-col">
+                        <h3>⭐ Últimas Reseñas</h3>
+                        <div id="ultimas-resenas"></div>
+                    </div>
+                </div>
+
+                <div class="grafico-box">
+                    <h3>📊 Reservas por día de la semana</h3>
+                    <div class="grafico-barras" id="grafico-dias"></div>
+                </div>
+            </div>
+
+            <!-- RESERVAS -->
+            <div id="seccion-reservas" class="admin-seccion">
+                <div class="seccion-header">
+                    <h2>📅 Gestión de Reservas</h2>
+                    <div class="reservas-filtros-admin">
+                        <select id="filtro-estado-reserva">
+                            <option value="todas">Todas</option>
+                            <option value="pendiente">Pendientes</option>
+                            <option value="confirmada">Confirmadas</option>
+                            <option value="cancelada">Canceladas</option>
+                        </select>
+                        <input type="date" id="filtro-fecha-reserva">
+                        <button class="btn btn-secondary" onclick="limpiarFiltrosReservas()">Limpiar</button>
+                    </div>
+                </div>
+                <div class="tabla-admin-wrapper">
+                    <table class="tabla-admin" id="tabla-reservas">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Personas</th>
+                                <th>Teléfono</th>
+                                <th>Ocasión</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-reservas"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- RESEÑAS -->
+            <div id="seccion-resenas" class="admin-seccion">
+                <div class="seccion-header">
+                    <h2>⭐ Gestión de Reseñas</h2>
+                </div>
+                <div class="tabla-admin-wrapper">
+                    <table class="tabla-admin" id="tabla-resenas">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Valoración</th>
+                                <th>Comentario</th>
+                                <th>Fecha</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-resenas"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- MENÚ -->
+            <div id="seccion-menu" class="admin-seccion">
+                <div class="seccion-header">
+                    <h2>🍽️ Gestión del Menú</h2>
+                    <button class="btn btn-primary" onclick="abrirModalPlato()">+ Añadir Plato</button>
+                </div>
+                <div class="tabla-admin-wrapper">
+                    <table class="tabla-admin">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Categoría</th>
+                                <th>Precio</th>
+                                <th>Alérgenos</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-menu"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODAL AÑADIR/EDITAR PLATO -->
+    <div id="modal-plato" class="modal" style="display:none">
+        <div class="modal-content">
+            <h2 id="modal-plato-titulo">Añadir Plato</h2>
+            <form id="form-plato">
+                <input type="hidden" id="plato-id">
+                <div class="form-group">
+                    <label>Nombre *</label>
+                    <input type="text" id="plato-nombre" placeholder="Nombre del plato" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Categoría *</label>
+                        <select id="plato-categoria" required>
+                            <option value="entrantes">Entrantes</option>
+                            <option value="principales">Principales</option>
+                            <option value="postres">Postres</option>
+                            <option value="bebidas">Bebidas</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Precio *</label>
+                        <input type="number" id="plato-precio" placeholder="0.00" step="0.01" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Descripción *</label>
+                    <textarea id="plato-descripcion" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Alérgenos</label>
+                    <div class="alergenos-check">
+                        <label><input type="checkbox" name="alergeno" value="gluten"> Gluten</label>
+                        <label><input type="checkbox" name="alergeno" value="lactosa"> Lactosa</label>
+                        <label><input type="checkbox" name="alergeno" value="frutos-secos"> Frutos secos</label>
+                        <label><input type="checkbox" name="alergeno" value="mariscos"> Mariscos</label>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <button type="button" class="btn btn-secondary" onclick="cerrarModalPlato()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="restaurante-script.js"></script>
+</body>
+</html>
